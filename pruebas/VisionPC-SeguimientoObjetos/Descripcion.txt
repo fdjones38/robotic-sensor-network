@@ -1,0 +1,24 @@
+Título: Seguimiento de colores con una WebCam y OpenCV.
+Área: Visión por computador.
+
+Autores: 
+	* Leidy Tatiana Soto.
+	* David Julián Saldaña.
+
+Fecha: 12 de Noviembre 2012
+
+
+
+Descripción:
+Proyecto de netbeans que reconoce colores por medio de una cámara web. La carpeta ObjectTracking es un proyecto de netbeans, el cual cuenta con los ejemplos para realizar seguimiento.
+
+La clases principales de los ejemplos son:
+	* tracking.ColoredObjectTrack: esta clase permite realizar seguimiento de un color.
+	* tracking.multiple.TrackingMain: esta clase funciona para hacer seguimiento a dos objetos.
+
+Requisitos:
+	- Ubuntu Linux 10.12
+	- Netbeans 7.21
+	- Java 6
+	- OpenCV 
+
