@@ -28,6 +28,7 @@ import javax.swing.JPanel;
 
 import com.googlecode.javacv.CanvasFrame;
 import com.googlecode.javacv.FrameGrabber;
+import com.googlecode.javacv.OpenCVFrameGrabber;
 import com.googlecode.javacv.VideoInputFrameGrabber;
 import com.googlecode.javacv.cpp.opencv_core.CvScalar;
 import com.googlecode.javacv.cpp.opencv_core.IplImage;
@@ -65,7 +66,10 @@ public class Object_1 implements Runnable {
     
     @Override
     public void run() {
-        FrameGrabber grabber = new VideoInputFrameGrabber(CAMERA_NUM); //Objeto que permite capturar la imagen de la webcam.
+        // For windows
+        //FrameGrabber grabber = new VideoInputFrameGrabber(CAMERA_NUM); //Objeto que permite capturar la imagen de la webcam.
+        // For Linux
+        FrameGrabber grabber = new OpenCVFrameGrabber(0);
         try {
             grabber.start(); //Inicia la grabación.
             IplImage img;

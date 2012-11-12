@@ -1,0 +1,23 @@
+Título: Robot seguidor del Norte con control PID
+Área: Control PID
+
+Autores: 
+	* David Julián Saldaña.
+	* Alejandro Daniel José Gomez.
+
+Fecha: 12 de Noviembre 2012
+
+
+
+Descripción:
+Se usa un robot diferencial controlado por un arduino y una brújula
+
+ - El proyecto de arduino se llama NorthFollower.
+ - En la imágen robot.jpg se puede observar el robot diferencial con la brujula y un módulo xbee.
+
+Requisitos:
+	- Robot diferencial
+	- Brujula digital HMC6352.
+	- Puente H o Motor Shield
+
+
