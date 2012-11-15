@@ -6,8 +6,8 @@
 
 
 // pwm de los motores
-int pwmMotorD = 170;
-int pwmMotorI = 170;
+int pwmMotorD = 160;
+int pwmMotorI = 160;
 
 // Pines en uso
 int pintMotorD=6;
@@ -19,7 +19,7 @@ int M2 = 4;
 boolean dir;
 
 // Angulo en el que se quiere dirigir.
-int anguloRef = 10;
+int anguloRef = 120;
 
 
 float P;
@@ -29,6 +29,8 @@ float I;
 float lastVal=0;
 
 int cont=0;
+
+
 
 // Reading from HMC6352 and send it to serial
 #include <Wire.h>     // need to the I2C Protocol used by the HMC6352
@@ -71,7 +73,7 @@ void loop(){
   lastVal = P;
   
  
-   float motorD = pwmMotorD - 6 * P - 15 * D;   
+   float motorD = pwmMotorD - 1 * P - 6 * D;   
    //float motorD = pwmMotorD - 1 * P;   
    
      
