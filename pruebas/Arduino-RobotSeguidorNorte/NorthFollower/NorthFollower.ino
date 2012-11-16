@@ -30,6 +30,7 @@ float lastVal=0;
 
 int cont=0;
 
+double errorAcumulado;
 
 
 // Reading from HMC6352 and send it to serial
@@ -68,12 +69,14 @@ void loop(){
   
   // El control proporcional es el numero de grados
   P = anguloRef - grados;
+  I += P;  
   D =   P - lastVal;
+  
 
   lastVal = P;
   
  
-   float motorD = pwmMotorD - 1 * P - 6 * D;   
+   float motorD = pwmMotorD - 1 * P - 6 * D - 0.2 * I;   
    //float motorD = pwmMotorD - 1 * P;   
    
      
@@ -83,14 +86,16 @@ void loop(){
    analogWrite(pintMotorD, motorD);       
 
    Serial.print(cont++);
-   Serial.print("d=");
+   Serial.print(",");
    Serial.print(grados);
   // Serial.print(" P=");  
   // Serial.print(P);
-   Serial.print(" D=");
+   Serial.print(",");
    Serial.print(D);
+   Serial.print(",");
+   Serial.print(I);
    
-   Serial.print(" M=");
+   Serial.print(",");
    Serial.print(motorD);
    // Serial.print(" ");
   
