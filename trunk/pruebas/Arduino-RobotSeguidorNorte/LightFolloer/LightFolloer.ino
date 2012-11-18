@@ -14,8 +14,9 @@ int M1 = 7;
 int M2 = 4;
 
 // Gradiente de la intensidad de luz que se desea seguir
-int LuzRef = 150;
-
+int luzRef = 150;
+//Intensidad de luz medida
+int luz = 0;
 //Valores del control PID
 float P;
 float D;
@@ -30,7 +31,7 @@ int cont=0;
 float errorAcumulado = 0;
 
 void setup(){
-  Serial.begin(9600); // Initiate Serial
+  Serial.begin(9600); // Inicializo la comunicación serial
   pinMode(pintMotorI, OUTPUT);
   pinMode(pintMotorD, OUTPUT);
   analogWrite(pintMotorD, pwmMotorD);
@@ -38,5 +39,13 @@ void setup(){
 }
 
 void loop(){
+  //leemos el valor de la fotocelda
+  luz = analogRead(A0);
+  //asignamos el signos (en caso de ser necesario)
+  
+  //calculamos el error con el valor de referencia
+  
+  //control PID
+  
   
 }
