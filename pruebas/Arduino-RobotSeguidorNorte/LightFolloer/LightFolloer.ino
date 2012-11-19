@@ -7,16 +7,18 @@ int pwmMotorD = 160;
 int pwmMotorI = 160;
 
 // Pines en uso
-int pintMotorD=6;
-int pintMotorI=5;
+int pintMotorD=6;		//motor Derecho
+int pintMotorI=5;		//motor Izquierdo
 
 int M1 = 7;
 int M2 = 4;
 
 // Gradiente de la intensidad de luz que se desea seguir
 int luzRef = 150;
+
 //Intensidad de luz medida
 int luz = 0;
+
 //Valores del control PID
 float P;
 float D;
@@ -41,11 +43,24 @@ void setup(){
 void loop(){
   //leemos el valor de la fotocelda
   luz = analogRead(A0);
-  //asignamos el signos (en caso de ser necesario)
   
-  //calculamos el error con el valor de referencia
+  //asignamos signos (en caso de ser necesario)
+  if(luz<luzRef){
+	/////operaciones
+  }else{
+	/////operaciones
+  }
+  
+  //calculamos el calculo de errores con el valor de referencia para el control PID
+  P = luzRef - luz;
+  I += P;
+  D =   P - lastVal;
+  float motorD = pwmMotorD - (1 * P) - (6 * D) - (0.2 * I);
+    
+  //almacenamos el valor P actual
+  lastVal = P;
   
   //control PID
-  
+  analogWrite(pintMotorD, motorD);
   
 }
