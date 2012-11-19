@@ -1,50 +1,52 @@
 /**
- * Esta aplicacin usa una brujula para contrlar por 
+ * Esta aplicación usa una brujula para contrlar por 
  * medio de un puente H un robot diferencial.
  *
  */
 
+// Reading from HMC6352 and send it to serial
+// need to the I2C Protocol used by the HMC6352.
+#include <Wire.h>  
 
-// pwm de los motores
+// PWM de los motores
 int pwmMotorD = 160;
 int pwmMotorI = 160;
 
 // Pines en uso
-int pintMotorD=6;
-int pintMotorI=5;
+int pinMotorD=6;
+int pinMotorI=5;
 
 int M1 = 7;
 int M2 = 4;
 
-boolean dir;
-
 // Angulo en el que se quiere dirigir.
 int anguloRef = 120;
 
-
+//Valores del control PID
 float P;
 float D;
 float I;
 
+// Valor almacenado de la iteración anterior
 float lastVal=0;
 
+// Contador para contar las iteraciones
 int cont=0;
-
-double errorAcumulado;
-
-
-// Reading from HMC6352 and send it to serial
-#include <Wire.h>     // need to the I2C Protocol used by the HMC6352
+ 
  
 void setup(){
-  Serial.begin(9600); // Initiate Serial
-  Wire.begin();       // Initiate I2C, No param means "join as master"
+  // Iniciar la comunicación serial.
+  Serial.begin(9600); 
+  // Initiate I2C, No param means "join as master"
+  Wire.begin();       
   
-  // declare pin 9 to be an output:
-  pinMode(pintMotorI, OUTPUT);
-  pinMode(pintMotorD, OUTPUT);
-  analogWrite(pintMotorD, pwmMotorD); 
-  analogWrite(pintMotorI, pwmMotorI);    
+  // Declara los pines de salida para el puente H.
+  pinMode(pinMotorI, OUTPUT);
+  pinMode(pinMotorD, OUTPUT);
+
+  // Declara las salidas de PWM para los motores.
+  analogWrite(pinMotorD, pwmMotorD); 
+  analogWrite(pinMotorI, pwmMotorI);    
 }
  
 void loop(){
@@ -83,21 +85,18 @@ void loop(){
    motorD = motorD > 255? 255 : motorD;
     motorD = motorD < 0? 0 : motorD;
     
-   analogWrite(pintMotorD, motorD);       
+   analogWrite(pinMotorD, motorD);       
 
-   Serial.print(cont++);
-   Serial.print(",");
-   Serial.print(grados);
-  // Serial.print(" P=");  
-  // Serial.print(P);
-   Serial.print(",");
-   Serial.print(D);
-   Serial.print(",");
-   Serial.print(I);
-   
-   Serial.print(",");
-   Serial.print(motorD);
-   // Serial.print(" ");
+  // Imprimir los parámetros del control PID:
+  Serial.print(cont++);
+  Serial.print(",");
+  Serial.print(grados);
+  Serial.print(",");
+  Serial.print(D);
+  Serial.print(",");
+  Serial.print(I);  
+  Serial.print(",");
+  Serial.print(motorD);
   
   Serial.println();
   
