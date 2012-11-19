@@ -1,66 +1,91 @@
-//esta aplicación usará una fotocelda para realizar
-//un seguimiento a un gradiente de luz
+/**
+ * Esta aplicación usa una fotocelda para realizar
+ * un seguimiento de una curva de nivel de un 
+ * gradiente de luz generado por una bombilla incandecente.
+ */
 
-
-// pwm de los motores
+// PWM de los motores
 int pwmMotorD = 160;
 int pwmMotorI = 160;
 
-// Pines en uso
-int pintMotorD=6;		//motor Derecho
-int pintMotorI=5;		//motor Izquierdo
+// Pines para puente H
+int pinMotorD = 6;		//motor Derecho
+int pinMotorI = 5;		//motor Izquierdo
 
+// Pines para salida PWM de motores.
 int M1 = 7;
 int M2 = 4;
 
-// Gradiente de la intensidad de luz que se desea seguir
-int luzRef = 150;
+// Pin para lectura de valor análogo de luz.
+int pinAnalogo = A0;
 
-//Intensidad de luz medida
+// Gradiente de la intensidad de luz que se desea seguir
+int luzRef = 400;
+
+// Intensidad de luz medida
 int luz = 0;
 
-//Valores del control PID
+// Valores del control PID
 float P;
 float D;
 float I;
 
-//valor almacenado del loop anterior
-float lastVal=0;
+// Valor almacenado de la iteración anterior
+float lastVal = 0;
 
-//contador para enumerar los datos de los ciclos loop
-int cont=0;
+// Contador para contar las iteraciones
+int cont = 0;
 
-float errorAcumulado = 0;
+// Valor del motor que se va modificar dinámicamente.
+float motorD;
 
 void setup(){
-  Serial.begin(9600); // Inicializo la comunicación serial
-  pinMode(pintMotorI, OUTPUT);
-  pinMode(pintMotorD, OUTPUT);
-  analogWrite(pintMotorD, pwmMotorD);
-  analogWrite(pintMotorI, pwmMotorI);
+  // Iniciar la comunicación serial.
+  Serial.begin(9600); 
+
+  // Declara los pines de salida para el puente H.
+  pinMode(pinMotorI, OUTPUT);
+  pinMode(pinMotorD, OUTPUT);
+
+  // Declara las salidas de PWM para los motores.
+  analogWrite(pinMotorD, pwmMotorD);
+  analogWrite(pinMotorI, pwmMotorI);
 }
 
 void loop(){
-  //leemos el valor de la fotocelda
-  luz = analogRead(A0);
+  // Lee el valor de la fotocelda
+  luz = analogRead(pinAnalogo);
   
-  //asignamos signos (en caso de ser necesario)
-  if(luz<luzRef){
-	/////operaciones
-  }else{
-	/////operaciones
-  }
-  
-  //calculamos el calculo de errores con el valor de referencia para el control PID
+   
+  // Control PID.
   P = luzRef - luz;
   I += P;
   D =   P - lastVal;
-  float motorD = pwmMotorD - (1 * P) - (6 * D) - (0.2 * I);
+  motorD = pwmMotorD - (0.3 * P) - (2 * D) - (0.07 * I);
     
-  //almacenamos el valor P actual
+  // Límites para el PWM.
+  motorD = motorD > 255? 255 : motorD;
+  motorD = motorD < 0? 0 : motorD;
+
+  // Almacena el valor P actual
   lastVal = P;
   
-  //control PID
-  analogWrite(pintMotorD, motorD);
+  // Control PID
+  analogWrite(pinMotorD, motorD);
+
+  // Imprimir los parámetros del control PID:
+  Serial.print(cont++);
+  Serial.print(",");
+  Serial.print(luz);
+  Serial.print(",");
+  Serial.print(D);
+  Serial.print(",");
+  Serial.print(I);  
+  Serial.print(",");
+  Serial.print(motorD);
+
+  
+  Serial.println();
+  delay(100);
   
 }
