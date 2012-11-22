@@ -58,11 +58,14 @@ void loop(){
   
    
   // Control PID.
-  P = luzRef - luz;
+  P = luzRef + luz;
   I += P;
   D =   P - lastVal;
-  motorD = pwmMotorD - (0.3 * P) - (2 * D) - (0.07 * I);
-    
+ 
+  //corrección de signo por análisis de recorridos
+  motorD = pwmMotorD + P;
+  //motorD = pwmMotorD - (0.3 * P) - (2 * D) - (0.07 * I);  
+  
   // Límites para el PWM.
   motorD = motorD > 255? 255 : motorD;
   motorD = motorD < 0? 0 : motorD;
