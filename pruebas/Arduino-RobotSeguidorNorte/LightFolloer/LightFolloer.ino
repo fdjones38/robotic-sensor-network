@@ -9,8 +9,8 @@ int pwmMotorD = 160;
 int pwmMotorI = 160;
 
 // Pines para puente H
-int pinMotorD = 6;		//motor Derecho
-int pinMotorI = 5;		//motor Izquierdo
+int pinMotorD = 5;		//motor Derecho
+int pinMotorI = 6;		//motor Izquierdo
 
 // Pines para salida PWM de motores.
 int M1 = 7;
@@ -20,7 +20,7 @@ int M2 = 4;
 int pinAnalogo = A0;
 
 // Gradiente de la intensidad de luz que se desea seguir
-int luzRef = 400;
+int luzRef = 680;
 
 // Intensidad de luz medida
 int luz = 0;
@@ -38,6 +38,13 @@ int cont = 0;
 
 // Valor del motor que se va modificar dinámicamente.
 float motorD;
+
+// Error acumulado.
+double errorAcumulado = 0;
+
+// Numero de iteraciones para E.
+int iteracionesE = 100;
+
 
 void setup(){
   // Iniciar la comunicación serial.
@@ -58,17 +65,21 @@ void loop(){
   
    
   // Control PID.
-  P = luzRef + luz;
+  P = luz - luzRef;
   I += P;
   D =   P - lastVal;
+  
+  // Error acumulado
+  if(cont < iteracionesE){
+     errorAcumulado += abs(P);
+  }
  
   //corrección de signo por análisis de recorridos
-  motorD = pwmMotorD + P;
-  //motorD = pwmMotorD - (0.3 * P) - (2 * D) - (0.07 * I);  
+  motorD = pwmMotorD - 1 * P - 6 * D - 0 * I;  
   
   // Límites para el PWM.
   motorD = motorD > 255? 255 : motorD;
-  motorD = motorD < 0? 0 : motorD;
+  motorD = motorD < 100? 100 : motorD;
 
   // Almacena el valor P actual
   lastVal = P;
@@ -81,10 +92,14 @@ void loop(){
   Serial.print(",");
   Serial.print(luz);
   Serial.print(",");
-  Serial.print(D);
+  Serial.print(P);
+//  Serial.print(",");
+//  Serial.print(D);
+//  Serial.print(",");
+//  Serial.print(I);  
   Serial.print(",");
-  Serial.print(I);  
-  Serial.print(",");
+  Serial.print(errorAcumulado);  
+  Serial.print(",");  
   Serial.print(motorD);
 
   
