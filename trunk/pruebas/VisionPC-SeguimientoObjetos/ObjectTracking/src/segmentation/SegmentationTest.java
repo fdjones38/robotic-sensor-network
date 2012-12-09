@@ -33,6 +33,8 @@ public class SegmentationTest {
         source.showImage(src);
         hough.showImage(dst);
 
+        cvSaveImage("thresh.jpg", dst);
+        
         source.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         hough.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }

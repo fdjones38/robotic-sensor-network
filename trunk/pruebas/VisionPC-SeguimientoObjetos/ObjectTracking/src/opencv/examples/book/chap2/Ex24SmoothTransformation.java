@@ -14,7 +14,7 @@ import static com.googlecode.javacv.cpp.opencv_highgui.*;
  *
  * @author dav
  */
-public class Ex24SimpleTransformation {
+public class Ex24SmoothTransformation {
     
     public static final String EXAMPLE_NAME = "Example 2.4";
 public static final String EXAMPLE_OUT = EXAMPLE_NAME+"_OUT";

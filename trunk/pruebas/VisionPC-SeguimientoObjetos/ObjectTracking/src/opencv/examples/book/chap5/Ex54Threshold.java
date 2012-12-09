@@ -17,8 +17,8 @@ public class Ex54Threshold {
     public static final int THRESHOLD = CV_THRESH_BINARY;
     public static final int THRESHOLD_TYPE = CV_THRESH_BINARY;
     public static final int ADAPTATIVE_METHOD = CV_ADAPTIVE_THRESH_GAUSSIAN_C;
-    public static final int BLOCK_SIZE = 3;
-    public static final int OFFSET = -30;
+    public static final int BLOCK_SIZE = 91;
+    public static final int OFFSET = 30;
     public static final String IMAGE_FILE = "flechas.jpg";
 
     public static void main(String[] args) {
@@ -31,8 +31,12 @@ public class Ex54Threshold {
                 grayImag.height()), IPL_DEPTH_8U, 1);
 
 
+         cvSmooth(grayImag, grayImag, CV_GAUSSIAN, 3);
+        
+        
+        
         //Threshold
-        cvThreshold(grayImag, theshImag, THRESHOLD, 255, THRESHOLD_TYPE);
+        cvThreshold(grayImag, theshImag, OFFSET, 255, THRESHOLD_TYPE);
         cvAdaptiveThreshold(grayImag, adapTheshImag, 255, ADAPTATIVE_METHOD,
                 THRESHOLD_TYPE, BLOCK_SIZE, OFFSET);
 
@@ -49,6 +53,8 @@ public class Ex54Threshold {
 
         cvWaitKey(0);
 
+        cvSaveImage("adaptativeThresh.jpg", adapTheshImag);
+        
         cvReleaseImage(grayImag);
         cvReleaseImage(theshImag);
         cvReleaseImage(adapTheshImag);
