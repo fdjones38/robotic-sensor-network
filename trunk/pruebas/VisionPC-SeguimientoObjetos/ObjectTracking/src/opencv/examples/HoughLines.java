@@ -2,7 +2,8 @@ package opencv.examples;
 
 import javax.swing.JFrame;
 import com.googlecode.javacpp.Pointer;
-import com.googlecode.javacv.*;
+import com.googlecode.javacv.CanvasFrame;
+
 import static com.googlecode.javacv.cpp.opencv_core.*;
 import static com.googlecode.javacv.cpp.opencv_imgproc.*;
 import static com.googlecode.javacv.cpp.opencv_highgui.*;
