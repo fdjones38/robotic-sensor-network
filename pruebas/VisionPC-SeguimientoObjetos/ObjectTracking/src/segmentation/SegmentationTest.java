@@ -29,6 +29,7 @@ public class SegmentationTest {
         dst = cvCreateImage(cvGetSize(src), src.depth(), 1);
 
         cvThreshold(src, dst, 166, 255, CV_THRESH_BINARY);
+//        cvThreshold(src, dst, 0, 255,  CV_THRESH_TOZERO_INV | CV_THRESH_OTSU);
            
         source.showImage(src);
         hough.showImage(dst);
