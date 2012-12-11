@@ -16,7 +16,6 @@ import static com.googlecode.javacv.cpp.opencv_highgui.*;
  */
 public class Ex83AdvContourDetection {
 
-    public static final int G_TRESH = 100;
 
     public static void main(String[] args) {
         cvNamedWindow("Contours", 1);
@@ -26,10 +25,15 @@ public class Ex83AdvContourDetection {
         IplImage imgEdge = cvCreateImage(cvGetSize(img8uc1), 8, 1);
         IplImage img8uc3 = cvCreateImage(cvGetSize(img8uc1), 8, 3);
 
+        // Apply smoothing is important to remove small particles.
+        cvSmooth(img8uc1, img8uc1, CV_GAUSSIAN, 3);
+        
         cvCvtColor(img8uc1, imgEdge, CV_BGR2GRAY);
         
         // Threshold for imgEdge.
-        cvThreshold(imgEdge, imgEdge, 128, 255, CV_THRESH_BINARY);
+//        cvThreshold(imgEdge, imgEdge, 128, 255, CV_THRESH_BINARY);
+         cvAdaptiveThreshold(imgEdge, imgEdge, 255, CV_ADAPTIVE_THRESH_GAUSSIAN_C,
+                CV_THRESH_BINARY, 91, 30.0);
 
         // Storage
         CvMemStorage storage = cvCreateMemStorage(0);
@@ -39,7 +43,7 @@ public class Ex83AdvContourDetection {
 
         // Find contours and return the number of contours.
         int numContours = cvFindContours(imgEdge, storage, fistCont, Loader.sizeof(CvContour.class),
-                CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE);
+                CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE);
 
         System.out.println("Contours detected:" + numContours);
 
@@ -55,19 +59,20 @@ public class Ex83AdvContourDetection {
             System.out.println("contour=" + n++ +"with elements="+c.total());
             cvShowImage("Contours", img8uc3);
 
-            for(int i=0;i<c.total();i++){                
-                //                CvPoint p = (CvPoint)
-                Pointer p = cvGetSeqElem(c,i);
-
-                System.out.println("("+p.toString()+","+")");                
-            }
+//            for(int i=0;i<c.total();i++){                
+//                //                CvPoint p = (CvPoint)
+//                Pointer p = cvGetSeqElem(c,i);
+//
+//                System.out.println("("+p.toString()+","+")");                
+//            }
             cvWaitKey(0);
         }
 
         System.out.println("Finished all contours.");
-        cvCvtColor(img8uc1,img8uc3,CV_GRAY2BGR);
+//        cvCvtColor(img8uc1,img8uc3,CV_GRAY2BGR);
         cvShowImage("Contours", img8uc3);
        
+         cvSaveImage("contours.jpg", img8uc3);
         cvWaitKey(0);
         
         // Destroy and release        
