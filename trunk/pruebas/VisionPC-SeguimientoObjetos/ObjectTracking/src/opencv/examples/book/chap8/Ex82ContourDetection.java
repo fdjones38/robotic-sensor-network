@@ -19,34 +19,43 @@ public class Ex82ContourDetection {
 
     public static void main(String[] args) {
         //
-        IplImage img = cvLoadImage("adrian.jpg");
+        IplImage img = cvLoadImage("flechas.jpg");
 
         cvNamedWindow("Contours", 1);
         //        cvCreateTrackbar("Threshold", "Contours", new int[]{100}, 255, null);
         IplImage grayImg = cvCreateImage(cvGetSize(img), 8, 1);
 
 
-        cvCreateImage(cvGetSize(img), 8, 1);
-
         CvMemStorage storage = cvCreateMemStorage(0);
 
+        // Transform to a gray scale.
         cvCvtColor(img, grayImg, CV_BGR2GRAY);
 
-
-        cvThreshold(grayImg, grayImg, G_TRESH, 255, CV_THRESH_BINARY);
+        
+        // Modification of the example
+        cvSmooth(grayImg, grayImg, CV_GAUSSIAN, 3);
+        
+        
+        // Apply threshold.
+          cvAdaptiveThreshold(grayImg, grayImg, 255, CV_ADAPTIVE_THRESH_GAUSSIAN_C,
+                CV_THRESH_BINARY, 91, 30.0);
+        
 
         CvSeq squares = new CvContour();
 
-        cvFindContours(grayImg, storage, squares, Loader.sizeof(CvContour.class), CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
+        cvFindContours(grayImg, storage, squares, Loader.sizeof(CvContour.class),
+                CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE);
 
-//        cvZero(grayImg);
-//
+        
+        IplImage contImg = cvCreateImage(cvGetSize(img), 8, 3);
+         
         cvDrawContours(
-                grayImg,
-                squares, CvScalar.YELLOW, CvScalar.BLUE, -1, 1, CV_AA);
+                contImg,
+                squares, CvScalar.WHITE, CvScalar.YELLOW, -1, 1, CV_AA);
 
-        cvShowImage("Contours", grayImg);
+        cvShowImage("Contours", contImg);
 
+        cvSaveImage("contours.jpg", contImg);
         //        on_trackbar(0);
         cvWaitKey();
 

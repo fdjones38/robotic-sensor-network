@@ -36,7 +36,7 @@ public class Ex54Threshold {
         
         
         //Threshold
-        cvThreshold(grayImag, theshImag, OFFSET, 255, THRESHOLD_TYPE);
+//        cvThreshold(grayImag, theshImag, OFFSET, 255, THRESHOLD_TYPE);
         cvAdaptiveThreshold(grayImag, adapTheshImag, 255, ADAPTATIVE_METHOD,
                 THRESHOLD_TYPE, BLOCK_SIZE, OFFSET);
 
