@@ -1,0 +1,6 @@
+Título: Diseño de tercer piso para el robot modelo Squid.
+Autores: * Alejandro Daniel José Gomez.
+
+
+Fecha: 1 de Diciembre 2012
+Descripción: se diseña una placa para ser instalada en la parte superior del robot diferencial Squid. En la imagen robotSquidPlaca.jpg se aprecia la placa adpatada. El plano Original se encuentra disponible en formato .dwg que se abre con el software Autocad, Corel Draw o Solid Edge. El corte se realizó sobre acrílico de 3mm gracias a una máquina de corte láser industrial.
