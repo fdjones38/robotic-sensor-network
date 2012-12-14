@@ -1,0 +1,7 @@
+Título: Envio de datos (modo API) al Modulo XBee Coordinador.
+Autores: * Alejandro Daniel José Gomez.
+
+
+Fecha: 14 de Diciembre 2012
+Descripción: El objetivo de estos progrmamas para arduino es poder enviar los datos obtenidos a partir de un sensor. El programa con nombre
+EnvioDatosCoordinadorEjemplo contiene el código básico para enviar datos a un modulo XBee configurado como Coordinador en modo Api.

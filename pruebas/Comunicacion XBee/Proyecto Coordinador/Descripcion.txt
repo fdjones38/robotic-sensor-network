@@ -1,0 +1,6 @@
+Título: Deteccion de Nodos Modulos XBee serie 2 Remotos.
+Autores: * Alejandro Daniel José Gomez.
+
+
+Fecha: 14 de Diciembre 2012
+Descripción: Este programa hace un listado de direcciones de dispositivos XBee que pueden ser detectados por el que está conectado a nuestro pc. Se requieren por lo menos dos modulos XBee serie 2, un adaptador usb para el XBee y fuentes de alimentacion para los otros dispositivos. Todos deben estar en modo API. El programa corre en equipos de 32 bits, en caso contrario reemplazar el rxtxSerial.dll para equipos de 64 bits (sistema operativo: Windows).
