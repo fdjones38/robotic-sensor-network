@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package opencv.examples.book.chap8;
+package robotTracking;
 
 import com.googlecode.javacpp.Loader;
 import com.googlecode.javacpp.Pointer;
@@ -20,18 +20,18 @@ public class ExEllipseTesting {
         cvNamedWindow("Contours", 1);
 
         //
-        IplImage img8uc1 = cvLoadImage("flechas.jpg");
-        IplImage imgEdge = cvCreateImage(cvGetSize(img8uc1), 8, 1);
-        IplImage img8uc3 = cvCreateImage(cvGetSize(img8uc1), 8, 3);
+        IplImage originalImg = cvLoadImage("flechas.jpg");
+        IplImage grayImg = cvCreateImage(cvGetSize(originalImg), 8, 1);
+        IplImage img8uc3 = cvCreateImage(cvGetSize(originalImg), 8, 3);
 
         // Apply smoothing is important to remove small particles.
-        cvSmooth(img8uc1, img8uc1, CV_GAUSSIAN, 3);
+        cvSmooth(originalImg, originalImg, CV_GAUSSIAN, 3);
 
-        cvCvtColor(img8uc1, imgEdge, CV_BGR2GRAY);
+        cvCvtColor(originalImg, grayImg, CV_BGR2GRAY);
 
         // Threshold for imgEdge.
 //        cvThreshold(imgEdge, imgEdge, 128, 255, CV_THRESH_BINARY);
-        cvAdaptiveThreshold(imgEdge, imgEdge, 255, CV_ADAPTIVE_THRESH_GAUSSIAN_C,
+        cvAdaptiveThreshold(grayImg, grayImg, 255, CV_ADAPTIVE_THRESH_GAUSSIAN_C,
                 CV_THRESH_BINARY, 91, 30.0);
 
         // Storage
@@ -41,7 +41,7 @@ public class ExEllipseTesting {
         CvSeq fistCont = new CvContour();
 
         // Find contours and return the number of contours.
-        int numContours = cvFindContours(imgEdge, storage, fistCont, Loader.sizeof(CvContour.class),
+        int numContours = cvFindContours(grayImg, storage, fistCont, Loader.sizeof(CvContour.class),
                 CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE);
 
         System.out.println("Contours detected:" + numContours);
@@ -89,8 +89,8 @@ public class ExEllipseTesting {
         // Destroy and release        
         cvDestroyWindow("Contours");
         cvReleaseImage(img8uc3);
-        cvReleaseImage(img8uc1);
-        cvReleaseImage(imgEdge);
+        cvReleaseImage(originalImg);
+        cvReleaseImage(grayImg);
 
     }
 }
