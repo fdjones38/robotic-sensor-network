@@ -17,11 +17,13 @@ public class VideoTracking {
 
     public static final String VIDEO_NAME = "Video original";
     public static final String PROC_VIDEO_NAME = "Video procesado";
-
+    private static final double RELATION_MAX = 1.9;
+    private static final double RELATION_MIN = 1.2;
+    
     public static void main(String args[]) {
 
         // Cargar el video.
-        CvCapture video = cvCreateFileCapture("RobotCV2.avi");
+        CvCapture video = cvCreateFileCapture("ProjectRobotCV-robotSolo.avi");
 
         // Crear la ventana del video normal.
         cvNamedWindow(VIDEO_NAME, CV_WINDOW_AUTOSIZE);
@@ -54,7 +56,7 @@ public class VideoTracking {
 
             //cvErode(gray_frame, gray_frame, null, CV_C);
 
-                //Smooth
+            //Smooth
             cvSmooth(grayFrame, grayFrame, CV_GAUSSIAN, 3);
 
 
@@ -66,10 +68,6 @@ public class VideoTracking {
             cvAdaptiveThreshold(grayFrame, processedFrame, 255, CV_ADAPTIVE_THRESH_GAUSSIAN_C,
                     CV_THRESH_BINARY, 91, 30.0);
 
-        
-            
-
-
             // Storage
             CvMemStorage storage = cvCreateMemStorage(0);
 
@@ -77,13 +75,13 @@ public class VideoTracking {
             CvSeq fistCont = new CvContour();
 
 //             cvCanny(processedFrame, processedFrame, 10, 200, 3);
-             
+
             // Find contours and return the number of contours.
             //    CV_CHAIN_APPROX_SIMPLE compresses horizontal, vertical, and diagonal segments, that is, the function leaves only their ending points;
             int numContours = cvFindContours(processedFrame, storage, fistCont, Loader.sizeof(CvContour.class),
                     CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE);
-            
-           
+
+
 
 
             // Number of contorns
@@ -97,14 +95,29 @@ public class VideoTracking {
                         frame,
                         c, CvScalar.RED, CvScalar.BLUE, 0, 1, CV_AA);
                 System.out.println("contour=" + n++ + "with elements=" + c.total());
-                
+
 
                 // Restringir por número de puntos
                 if (c.total() > 40 && c.total() < 60) {
                     CvBox2D e = cvFitEllipse2(c);
-                    cvDrawEllipse(frame, cvPoint((int) e.center().x(), (int) e.center().y()),
-                            cvSize((int) e.size().width()/2, (int) e.size().height()/2), e.angle(),
-                            0, 360, CvScalar.YELLOW, 1, CV_AA, 0);
+                    CvPoint centerPoint = cvPoint((int) e.center().x(), (int) e.center().y());
+
+
+                    double relacion = e.size().height() / e.size().width();
+                    
+                    if (relacion > RELATION_MIN && relacion < RELATION_MAX) {
+                        cvDrawEllipse(frame, centerPoint,
+                                cvSize((int) e.size().width() / 2, (int) e.size().height() / 2), e.angle(),
+                                0, 360, CvScalar.YELLOW, 2, CV_AA, 0);
+                    }
+
+
+
+                    // For debug put a text.
+//                    cvPutText(frame, "P" + (),
+//                            centerPoint, new CvFont(CV_FONT_HERSHEY_PLAIN, 1, 1),
+//                            new CvScalar());
+
                 }
             }
 
