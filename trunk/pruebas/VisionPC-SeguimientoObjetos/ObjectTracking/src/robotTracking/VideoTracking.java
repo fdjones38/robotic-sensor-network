@@ -76,23 +76,17 @@ public class VideoTracking {
             // First contour
             CvSeq fistCont = new CvContour();
 
-             cvCanny(processedFrame, processedFrame, 10, 200, 3);
+//             cvCanny(processedFrame, processedFrame, 10, 200, 3);
              
             // Find contours and return the number of contours.
-            // The methods can be:
-            //    CV_CHAIN_CODE outputs contours in the Freeman chain code. All other methods output polygons (sequences of vertices).
-            //    CV_CHAIN_APPROX_NONE translates all the points from the chain code into points;
             //    CV_CHAIN_APPROX_SIMPLE compresses horizontal, vertical, and diagonal segments, that is, the function leaves only their ending points;
-            //    CV_CHAIN_APPROX_TC89_L1,
-            //    CV_CHAIN_APPROX_TC89_KCOS applies one of the flavors of Teh-Chin chain approximation algorithm.
-            //    CV_LINK_RUNS uses completely different (from the previous methods) algorithm - linking of horizontal segments of 1's. Only CV_RETR_LIST retrieval mode is allowed by the method. 
             int numContours = cvFindContours(processedFrame, storage, fistCont, Loader.sizeof(CvContour.class),
                     CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE);
             
            
 
 
-
+            // Number of contorns
             int n = 0;
 
             // for each contourn
