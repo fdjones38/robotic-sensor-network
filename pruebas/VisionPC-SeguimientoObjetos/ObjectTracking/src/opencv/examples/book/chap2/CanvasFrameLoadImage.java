@@ -10,19 +10,16 @@ import com.googlecode.javacv.cpp.opencv_core.IplImage;
 public class CanvasFrameLoadImage {
 
 	/**
-	 * @author Alejandro Gómez
+	 * @author Alejandro GÃ³mez
 	 */
 	public static void main(String[] args) {
 		IplImage img = cvLoadImage("image.jpg");
 		CanvasFrame canvas = new CanvasFrame("ExampleJava", 1);
 		canvas.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		canvas.showImage(img);
-		try {
-			canvas.waitKey(0);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
+                
+                canvas.waitKey(0);
 		cvReleaseImage(img);
 		canvas.dispose();
 	}
