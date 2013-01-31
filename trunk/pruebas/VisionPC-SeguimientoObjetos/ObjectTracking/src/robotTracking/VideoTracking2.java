@@ -39,7 +39,9 @@ public class VideoTracking2 {
         frame = cvQueryFrame(video);
 
         double fps = 25;
-        double desiredFps = 6;
+        double desiredFps = 6;      //-> Este parámetro indica cada cuantos
+                                    //   frames se procesará la imagen para
+                                    //   buscar los robots.
         
         int frec = (int) Math.ceil(fps / desiredFps);
         int frameCounter = 1;
