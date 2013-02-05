@@ -17,7 +17,7 @@ import javax.swing.JOptionPane;
 /**
  *
  * @author ALDAJO
- * Descripción: Programa que permite el recibir una cadena de datos e imprimirlos, donde se visualiza la dirección de
+ * Descripciï¿½n: Programa que permite el recibir una cadena de datos e imprimirlos, donde se visualiza la direcciï¿½n de
  * los dispositivos y los datos que se reciven ya procesados. Funciona con el formato de envio de datos creados
  * para las tarjetas arduino.
  */
@@ -57,7 +57,7 @@ public class XBeeReceiveData implements MessageListener{
     private void analizeDataCome(ZNetRxResponse packet){
         //addr64Names = xbeeC.getXBeesWithID();
         int idData = packet.getData()[0];
-        if(idData == 07xFB || idData == 0xFD || idData == 0xFE){
+        if(idData == 0xFB || idData == 0xFD || idData == 0xFE){
             //Almacenamos la informacion util: direccion y paquete de datos
             int[] data = packet.getData();
             XBeeAddress64 xb64 = packet.getRemoteAddress64();
