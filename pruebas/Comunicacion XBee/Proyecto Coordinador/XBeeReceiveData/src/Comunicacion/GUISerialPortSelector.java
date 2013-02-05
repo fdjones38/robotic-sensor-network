@@ -18,9 +18,14 @@ import javax.swing.JOptionPane;
  */
 public class GUISerialPortSelector {
     
-    //Enlista los puertos
+    /**
+     * Enlista los puertos.
+     */
     private Enumeration commports;
-    //Puerto a seleccionar
+    
+    /**
+     * Puerto a seleccionar.
+     */
     private CommPortIdentifier myCPI;
     //Nombre del puerto a seleccionar
     private String SelectedPortName = null;

@@ -91,30 +91,9 @@ public class XBeeDataReceiver implements MessageListener {
         return result;
     }
 
-    //procesamiento de datos que vienen divididos en dos bytes, para unirlos
-    private float convertDataType1(int a, int b) {
-        //importante el orden en el que llegan
-        return ((a << 8) + b) / 10;
-    }
-    //procesamiento de datos que vienen divididos en dos bytes, para unirlos
-
-    private float convertDataType2(int a, int b, int c) {
-        //importante el orden en el que llegan
-        return ((a << 16) + (b << 8) + c) / 1000;
-    }
-    //procesamiento de datos que vienen divididos en dos bytes, para unirlos
-
-    private float convertDataType3(long a, long b, long c, long d) {
-        //importante el orden en el que llegan
-        long v1 = a << 24;
-        long v2 = b << 16;
-        long v3 = c << 8;
-        return (v1 + v2 + v3 + d) / 100;
-    }
-
     /**
-     * Analizar los datos recibidos por xbee. El paquete que se recibe cumple
-     * con el siguiente formato:
+     * Convertir los datos recibidos en bits a float. El paquete que se recibe
+     * cumple con el siguiente formato:
      *
      * data[0]: tamaño de cada uno de los datos. Puede ser 2,3 o 4 bytes.
      *
@@ -136,11 +115,7 @@ public class XBeeDataReceiver implements MessageListener {
         // Almacena la informacion: direccion de 64bits del módulo xbee y
         // paquete de datos.
         int[] data = packet.getData();
-        XBeeAddress64 xb64 = packet.getRemoteAddress64();
 
-
-        // Imprime la dirección.
-        System.out.print("Address: " + xb64.toString());
 
         // Número de valores numéricos que se van a recibir.
         int numData = data[1];
@@ -171,17 +146,36 @@ public class XBeeDataReceiver implements MessageListener {
             for (int j = 0; j < size; j++) {
                 dataTmp[j] = data[index++];
             }
-            
+
             // Convertir de bits a float.
-            convertedValues[i]= convertDataType(dataTmp);
+            convertedValues[i] = convertDataType(dataTmp);
         }
-        
+
         return convertedValues;
     }
 
     @Override
     public void dataMessage(ZNetRxResponse packet) {
-        convertIncommingData(packet);
+        XBeeAddress64 xb64 = packet.getRemoteAddress64();
+
+        // Imprime la dirección.
+        System.out.print("Address: " + xb64.toString());
+
+
+        float[] receivedValues = convertIncommingData(packet);
+
+        // Validar que los valores recibidos no sean nulos.
+        if (receivedValues == null) {
+            System.out.println("Valores recibidos nulos");
+            return;
+        }
+
+        System.out.print("Valores recibidos: ");
+        for (float val : receivedValues) {
+            System.out.print(val + " ");
+        }
+
+        System.out.println();
     }
 
     @Override
