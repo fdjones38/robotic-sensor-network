@@ -5,38 +5,90 @@
 package application;
 
 import XBeeController.MessageListener;
-import XBeeController.XbeeController;
+import XBeeController.XBeeController;
 import com.rapplogic.xbee.api.*;
 import com.rapplogic.xbee.api.zigbee.ZNetRxResponse;
 import javax.swing.JOptionPane;
 
 /**
  * Programa que permite el recibir una cadena de datos e imprimirlos, donde se
- * visualiza la dirección de los dispositivos y los datos que se reciven ya
- * procesados. Funciona con el formato de envio de datos creados para las
- * tarjetas arduino.
+ * visualiza la dirección de los dispositivos y los datos que se reciben ya
+ * procesados. Funciona con el formato de envío de datos creados para las
+ * tarjetas arduino. En el arduino está instalado el programa
+ * LightFollowerZigbee.
  *
- * @author ALDAJO
+ * @author Alejandro Gómez Florez.
  *
  */
 public class XBeeDataReceiver implements MessageListener {
 
-    private XbeeController xbeeC;
+    /**
+     * Indica que los datos recibidos están dividos en dos bytes.
+     */
+    private static final int TWO_BYTES_INDICATOR = 0xFB;
+    /**
+     * Indica que los datos recibidos están dividos en tres bytes.
+     */
+    private static final int THREE_BYTES_INDICATOR = 0xFD;
+    /**
+     * Indica que los datos recibidos están dividos en cuatro bytes.
+     */
+    private static final int FOUR_BYTES_INDICATOR = 0xFE;
+    private static final int NUM_DECIMAL = 100;
+    private XBeeController xbeeC;
 
     /**
      * Default constructor.
      */
     public XBeeDataReceiver() {
-        xbeeC = new XbeeController();
+        xbeeC = new XBeeController();
     }
 
     public void start() {
         try {
-            xbeeC.openSerialPort();
+            boolean oppenedPort = xbeeC.openSerialPort();
+            // TODO validar que el puerto esté abierto.
+
             xbeeC.addMessageListener(this);
         } catch (XBeeException ex) {
-            JOptionPane.showMessageDialog(null, "Problems in the port\n" + ex);
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Problems in the port\n"
+                    + ex.getMessage());
         }
+    }
+
+    /**
+     * Convierte bytes en float.
+     *
+     * @param bytes
+     * @return
+     */
+    private float convertDataType(int[] bytes) {
+        // Número máximo alcanzable en bits
+        int bitsCapacity = (int) Math.pow(256, bytes.length);
+
+        // Número máximo positivo
+        int maxPossitiveValue = (int) bitsCapacity / 2;
+
+        float result = 0;
+
+        // Leer el número en bytes.
+        for (int i = 0; i < bytes.length; i++) {
+            result += bytes[i] << (bytes.length - 1 - i) * 8;
+
+        }
+
+        // Si el valor es negativo
+        if (result > maxPossitiveValue) {
+            result = (float) (result - bitsCapacity);
+        }
+
+        // Se convierte a números decimales.
+        result = result / NUM_DECIMAL;
+
+
+
+        return result;
     }
 
     //procesamiento de datos que vienen divididos en dos bytes, para unirlos
@@ -60,42 +112,76 @@ public class XBeeDataReceiver implements MessageListener {
         return (v1 + v2 + v3 + d) / 100;
     }
 
-    private void analizeDataCome(ZNetRxResponse packet) {
-        //addr64Names = xbeeC.getXBeesWithID();
+    /**
+     * Analizar los datos recibidos por xbee. El paquete que se recibe cumple
+     * con el siguiente formato:
+     *
+     * data[0]: tamaño de cada uno de los datos. Puede ser 2,3 o 4 bytes.
+     *
+     * data[1]: número de valores numéricos que se van a recibir.
+     *
+     * data[2...n]: valores.
+     *
+     * @param packet
+     */
+    private float[] convertIncommingData(ZNetRxResponse packet) {
+        // Obtiene el id de los datos.
         int idData = packet.getData()[0];
-        if (idData == 0xFB || idData == 0xFD || idData == 0xFE) {
-            //Almacenamos la informacion util: direccion y paquete de datos
-            int[] data = packet.getData();
-            XBeeAddress64 xb64 = packet.getRemoteAddress64();
-            float value;
-            //cadena de texto para imprimir en terminal opcional
-            //String text = "Address: " +xb64.toString();
-            System.out.print("Address: " + xb64.toString());
-            if (idData == 0xFB) {
-                for (int i = 0; i < data[1]; i++) {
-                    value = convertDataType1(data[(i + 1) * 2], data[(2 * i) + 3]);
-                    System.out.print(" Data" + (i + 1) + ": " + value + "\n");
-                    //text = text + " Data"+(i+1)+": "+value;
-                }
-            } else if (idData == 0xFD) {
-                for (int i = 0; i < data[1]; i++) {
-                    value = convertDataType2(data[(3 * i) + 2], data[3 * (i + 1)], data[(3 * i) + 4]);
-                    System.out.print(" Data" + (i + 1) + ": " + value + "\n");
-                    //text = text + " Data"+(i+1)+": "+value;
-                }
-            } else {
-                for (int i = 0; i < data[1]; i++) {
-                    value = convertDataType3(data[(4 * i) + 2], data[(4 * i) + 3], data[4 * (i + 1)], data[(4 * i) + 5]);
-                    System.out.print(" Data" + (i + 1) + ": " + value + "\n");
-                    //text = text + " Data"+(i+1)+": "+value;
-                }
-            }
+
+        // Validar que el paquete recibido cumpla con el formato.
+        if (idData != TWO_BYTES_INDICATOR && idData != THREE_BYTES_INDICATOR && idData == FOUR_BYTES_INDICATOR) {
+            return null;
         }
+
+        // Almacena la informacion: direccion de 64bits del módulo xbee y
+        // paquete de datos.
+        int[] data = packet.getData();
+        XBeeAddress64 xb64 = packet.getRemoteAddress64();
+
+
+        // Imprime la dirección.
+        System.out.print("Address: " + xb64.toString());
+
+        // Número de valores numéricos que se van a recibir.
+        int numData = data[1];
+
+        float[] convertedValues = new float[numData];
+
+        // Tamaño de los datos
+        int size = -1;
+        switch (idData) {
+            case TWO_BYTES_INDICATOR:
+                size = 2;
+                break;
+            case THREE_BYTES_INDICATOR:
+                size = 3;
+                break;
+            case FOUR_BYTES_INDICATOR:
+                size = 4;
+                break;
+
+        }
+
+        int index = 2;
+        // Recorrer el número de valores en el paquete.
+        for (int i = 0; i < numData; i++) {
+            int dataTmp[] = new int[size];
+
+            // Recorrer el número de bytes por cada valor/dato.
+            for (int j = 0; j < size; j++) {
+                dataTmp[j] = data[index++];
+            }
+            
+            // Convertir de bits a float.
+            convertedValues[i]= convertDataType(dataTmp);
+        }
+        
+        return convertedValues;
     }
 
     @Override
     public void dataMessage(ZNetRxResponse packet) {
-        analizeDataCome(packet);
+        convertIncommingData(packet);
     }
 
     @Override
