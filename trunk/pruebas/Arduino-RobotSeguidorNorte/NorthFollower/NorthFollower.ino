@@ -1,7 +1,11 @@
 /**
  * Esta aplicación usa una brujula para contrlar por 
  * medio de un puente H un robot diferencial.
- *
+ *  Docs de referencia:
+ *  Programa:
+ *  http://arduino.cc/playground/Learning/Hmc6352
+ *  Conexion:
+ *  http://bildr.org/2011/01/hmc6352/
  */
 
 // Reading from HMC6352 and send it to serial
@@ -13,8 +17,8 @@ int pwmMotorD = 160;
 int pwmMotorI = 160;
 
 // Pines en uso
-int pinMotorD=6;
-int pinMotorI=5;
+int pinMotorD=5;
+int pinMotorI=6;
 
 int M1 = 7;
 int M2 = 4;
@@ -78,12 +82,12 @@ void loop(){
   lastVal = P;
   
  
-   float motorD = pwmMotorD - 1 * P - 6 * D - 0.2 * I;   
+   float motorD = pwmMotorD - 1 * P - 6 * D - 0 * I;   
    //float motorD = pwmMotorD - 1 * P;   
    
      
    motorD = motorD > 255? 255 : motorD;
-    motorD = motorD < 0? 0 : motorD;
+    motorD = motorD < 100? 100 : motorD;
     
    analogWrite(pinMotorD, motorD);       
 

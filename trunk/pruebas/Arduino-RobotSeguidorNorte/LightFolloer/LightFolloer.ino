@@ -20,7 +20,7 @@ int M2 = 4;
 int pinAnalogo = A0;
 
 // Gradiente de la intensidad de luz que se desea seguir
-int luzRef = 680;
+int luzRef = 830;
 
 // Intensidad de luz medida
 int luz = 0;
