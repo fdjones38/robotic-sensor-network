@@ -4,7 +4,7 @@
  */
 package XBeeController;
 
-import Comunicacion.PuertoSerial;
+import Comunicacion.GUISerialPortSelector;
 import com.rapplogic.xbee.api.*;
 import com.rapplogic.xbee.api.zigbee.NodeDiscover;
 import com.rapplogic.xbee.api.zigbee.ZNetRxResponse;
@@ -18,7 +18,7 @@ import javax.swing.JOptionPane;
  * version2
  * @author ALDAJO
  */
-public class XbeeController implements PacketListener {
+public class XBeeController implements PacketListener {
     
     XBee xbee = null;
     //Direcciones con su respectivo nombre (ID)//antes addrXbeeSquids
@@ -32,7 +32,7 @@ public class XbeeController implements PacketListener {
     //Clientes que implementan la interfaz NodesListener
     private List<NodesListener>clientsNL;
     //permite manipular los puertos Seriales
-    private PuertoSerial pSerial;
+    private GUISerialPortSelector pSerial;
     //contador de XBee
     private int counterXBee = 0;
     //Nombre y direccion de 64 bits constantes
@@ -41,8 +41,8 @@ public class XbeeController implements PacketListener {
     
     private String selectedSerialPort;
     
-    public XbeeController(){
-        pSerial = new PuertoSerial();
+    public XBeeController(){
+        pSerial = new GUISerialPortSelector();
         clientsML = new ArrayList<>();
         clientsNL = new ArrayList<>();
         addr64Names = new HashMap<>();
@@ -59,21 +59,36 @@ public class XbeeController implements PacketListener {
         clientsNL.add(cl);
     }
     
-    public void openSerialPort() throws XBeeException{
+    /**
+     * 
+     * @return true si el puerto fue abierto.
+     * @throws XBeeException 
+     */
+    public boolean openSerialPort() throws XBeeException{
         pSerial = null;
-        pSerial = new PuertoSerial();
+        pSerial = new GUISerialPortSelector();
+        
+        // Se le solicita al usuario seleccionar un puerto.
         selectedSerialPort = pSerial.showMessageNamePortName();
+        
         if(selectedSerialPort == null){
-            JOptionPane.showMessageDialog(null, "You do not select a Port!");
+            JOptionPane.showMessageDialog(null, "You did not select a Port!");
+            return false;
         }else{
+            
+            // Si ya estaba abierto, entonces cierra el puerto.
             if(xbee != null){
                 xbee.close();
                 xbee = null;
             }
-            pSerial.refreshPortName();
+            
+//            pSerial.refreshPortName();
+            
             xbee = new XBee();
             xbee.open(selectedSerialPort, 9600);
             xbee.addPacketListener(this);
+            
+            return true;
         }
     }
     

@@ -16,7 +16,7 @@ import javax.swing.JOptionPane;
  *
  * @author ALDAJO
  */
-public class PuertoSerial {
+public class GUISerialPortSelector {
     
     //Enlista los puertos
     private Enumeration commports;
@@ -27,7 +27,7 @@ public class PuertoSerial {
     //Listado del nombre de los puertos
     private Set<String> portsNames = null;
     
-    public PuertoSerial(){
+    public GUISerialPortSelector(){
         initPortName();
     }
     
