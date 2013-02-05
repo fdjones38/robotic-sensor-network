@@ -4,7 +4,7 @@
  */
 package main;
 
-import application.XBeeReceiveData;
+import application.XBeeDataReceiver;
 
 /**
  *
@@ -13,7 +13,8 @@ import application.XBeeReceiveData;
 public class RunAplication {
     
     public static void main(String[] args){
-        XBeeReceiveData xbeeRD = new XBeeReceiveData();
+        XBeeDataReceiver xbeeRD = new XBeeDataReceiver();
+        xbeeRD.start();
     }
     
 }
