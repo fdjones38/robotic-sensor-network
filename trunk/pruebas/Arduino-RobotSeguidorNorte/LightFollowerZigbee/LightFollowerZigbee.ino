@@ -3,21 +3,26 @@
  * un seguimiento de una curva de nivel de un 
  * gradiente de luz generado por una bombilla incandecente.
  */
-
+#include <XBee.h>
 
 //Comunicacion
 //ZIG-BEE: Direccion de 64 bits (Direccion del Coordinador)
 XBeeAddress64 addr64 = XBeeAddress64(0x00000000, 0x00000000);
 //ZIG-BEE: direccion de 16 bits
 uint16_t addr16 = 0xFFFE;
+
+//Paquete de datos a enviar
+uint8_t payload[10];
+
+XBee xbee = XBee();
+
 //ZIG-BEE: Envio de datos
 ZBTxRequest zbTx = ZBTxRequest(addr64, addr16, 0x00, 0x01, payload, sizeof(payload), 0x01);
 //ZIG-BEE: Recepcion de datos
 XBeeResponse response = XBeeResponse();
 ZBRxResponse rx = ZBRxResponse();
 
-//Paquete de datos a enviar
-uint8_t payload[] = { 0, 0, 0 };
+
 
 // PWM de los motores
 int pwmMotorD = 160;
@@ -77,41 +82,41 @@ void setup(){
 void loop(){
   // Lee el valor de la fotocelda
   luz = analogRead(pinAnalogo);
-   
+
   // Control PID.
   P = luz - luzRef;
   I += P;
   D =   P - lastVal;
-  
+
   // Error acumulado
   if(cont < iteracionesE){
-     errorAcumulado += abs(P);
+    errorAcumulado += abs(P);
   }
- 
+
   //corrección de signo por análisis de recorridos
   motorD = pwmMotorD - 1 * P - 6 * D - 0 * I;  
-  
+
   // Límites para el PWM.
   motorD = motorD > 255? 255 : motorD;
   motorD = motorD < 100? 100 : motorD;
 
   // Almacena el valor P actual
   lastVal = P;
-  
+
   // Control PID
   analogWrite(pinMotorD, motorD);
 
   //parametros temporales para ser enviados
   uint32_t thP = (int) (P*100)+30000;
-  uint32_t thErrorAc = (uint16_t) (ErrorAcumulado*100)+10000000;
+  uint32_t thErrorAc = (uint16_t) (errorAcumulado * 100) + 10000000;
   uint32_t thMotorD = (uint16_t) (motorD*100)+10000000;
   // ZIGBEE: Envia los parámetros deseados para ser graficado
   payload[0] = 0xFD;
   //byte que indica la cantidad de datos que se envairan fragmentados
   payload[1] = 0x04;
-  payload[2] = 0
-  payload[3] = 0
-  payload[4] = luz >> 8 & 0xff;
+  payload[2] = 0;
+    payload[3] = 0;
+    payload[4] = luz >> 8 & 0xff;
   payload[5] = luz & 0xff;
   payload[6] = thP >> 24 & 0xff;
   payload[7] = thP >> 16 & 0xff;
@@ -128,5 +133,5 @@ void loop(){
 
   xbee.send(zbTx);
   delay(100);
-  
+
 }
