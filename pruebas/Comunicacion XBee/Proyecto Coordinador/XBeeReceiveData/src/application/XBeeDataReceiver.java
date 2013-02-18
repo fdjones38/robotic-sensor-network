@@ -47,8 +47,8 @@ public class XBeeDataReceiver implements MessageListener {
     public void start() {
         try {
             boolean oppenedPort = xbeeC.openSerialPort();
-            
-            if(!oppenedPort){
+
+            if (!oppenedPort) {
                 System.out.println("The serial port was not openned.");
                 return;
             }
@@ -124,6 +124,9 @@ public class XBeeDataReceiver implements MessageListener {
         // Número de valores numéricos que se van a recibir.
         int numData = data[1];
 
+
+
+
         float[] convertedValues = new float[numData];
 
         // Tamaño de los datos
@@ -163,10 +166,17 @@ public class XBeeDataReceiver implements MessageListener {
         XBeeAddress64 xb64 = packet.getRemoteAddress64();
 
         // Imprime la dirección.
-        System.out.print("Address: " + xb64.toString());
+        System.out.println("Address: " + xb64.toString());
 
 
-        float[] receivedValues = convertIncommingData(packet);
+        float[] receivedValues = null;
+
+        try {
+            receivedValues = convertIncommingData(packet);
+        } catch (Exception e) {
+            Exception exception = new Exception("Error: converting received data.", e);
+            exception.printStackTrace();
+        }
 
         // Validar que los valores recibidos no sean nulos.
         if (receivedValues == null) {
