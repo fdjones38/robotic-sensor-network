@@ -41,7 +41,7 @@ public class GUISerialPortSelector {
     }
     
     private void initPortName(){
-        portsNames = new TreeSet<>();
+        portsNames = new TreeSet<String>();
         commports = CommPortIdentifier.getPortIdentifiers();
         while(commports.hasMoreElements()){
             myCPI = (CommPortIdentifier) commports.nextElement();
