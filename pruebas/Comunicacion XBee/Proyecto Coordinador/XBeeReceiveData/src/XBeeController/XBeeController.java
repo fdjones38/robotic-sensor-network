@@ -43,10 +43,10 @@ public class XBeeController implements PacketListener {
     
     public XBeeController(){
         pSerial = new GUISerialPortSelector();
-        clientsML = new ArrayList<>();
-        clientsNL = new ArrayList<>();
-        addr64Names = new HashMap<>();
-        numAddr64Register = new HashMap<>();
+        clientsML = new ArrayList<MessageListener>();
+        clientsNL = new ArrayList<NodesListener>();
+        addr64Names = new HashMap<XBeeAddress64, String>();
+        numAddr64Register =  new HashMap<Integer, XBeeAddress64>();
         addr64Names.put(BROADCASTADDR, bcName);
         numAddr64Register.put(0, BROADCASTADDR);
     }
@@ -128,8 +128,8 @@ public class XBeeController implements PacketListener {
     public void searchXBeeDevices() throws XBeeException{
             addr64Names = null;
             numAddr64Register = null;
-            addr64Names = new HashMap<>();
-            numAddr64Register = new HashMap<>();
+            addr64Names = new HashMap<XBeeAddress64, String>();
+            numAddr64Register = new HashMap<Integer, XBeeAddress64>();
             counterXBee = 0;
             addr64Names.put(BROADCASTADDR, bcName);
             numAddr64Register.put(0, BROADCASTADDR);
@@ -146,7 +146,7 @@ public class XBeeController implements PacketListener {
     
     private void formatAddr64List(){
         numNamesAddr64XBee = null;
-        numNamesAddr64XBee = new HashMap<>();
+        numNamesAddr64XBee = new HashMap<String, XBeeAddress64>();
         //numNamesAddr.put(bcName, BROADCASTADDR);
         for(Integer i: numAddr64Register.keySet()){
             //empleamos la lista de todas las direcciones registradas
