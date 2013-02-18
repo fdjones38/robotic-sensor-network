@@ -47,7 +47,11 @@ public class XBeeDataReceiver implements MessageListener {
     public void start() {
         try {
             boolean oppenedPort = xbeeC.openSerialPort();
-            // TODO validar que el puerto esté abierto.
+            
+            if(!oppenedPort){
+                System.out.println("The serial port was not openned.");
+                return;
+            }
 
             xbeeC.addMessageListener(this);
         } catch (XBeeException ex) {
