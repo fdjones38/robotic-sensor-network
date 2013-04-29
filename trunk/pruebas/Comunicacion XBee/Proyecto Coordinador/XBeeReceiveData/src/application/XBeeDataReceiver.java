@@ -67,32 +67,23 @@ public class XBeeDataReceiver implements MessageListener {
      * @param bytes
      * @return
      */
-    private float convertDataType(int[] bytes) {
-        // Número máximo alcanzable en bits
-        int bitsCapacity = (int) Math.pow(256, bytes.length);
-
-        // Número máximo positivo
-        int maxPossitiveValue = (int) bitsCapacity / 2;
-
-        float result = 0;
+    public static float convertDataType(int[] bytes) {
+        //variable que nos almacena el valor procesado por el algoritmo
+        int fstResult = 0;
 
         // Leer el número en bytes.
+        System.out.print("bytes:");
         for (int i = 0; i < bytes.length; i++) {
-            result += bytes[i] << (bytes.length - 1 - i) * 8;
-
+            System.out.print("\t"+bytes[i]);
+            int calc = (int) (bytes[i] << ((bytes.length - 1 - i) * 8));
+            fstResult = fstResult | calc;
         }
+        System.out.println("");
 
-        // Si el valor es negativo
-        if (result > maxPossitiveValue) {
-            result = (float) (result - bitsCapacity);
-        }
+//         Se convierte a números decimales.
+        float result = ((float)fstResult) / NUM_DECIMAL;
 
-        // Se convierte a números decimales.
-        result = result / NUM_DECIMAL;
-
-
-
-        return result;
+        return (float)result;
     }
 
     /**
@@ -112,7 +103,7 @@ public class XBeeDataReceiver implements MessageListener {
         int idData = packet.getData()[0];
 
         // Validar que el paquete recibido cumpla con el formato.
-        if (idData != TWO_BYTES_INDICATOR && idData != THREE_BYTES_INDICATOR && idData == FOUR_BYTES_INDICATOR) {
+        if (idData != TWO_BYTES_INDICATOR && idData != THREE_BYTES_INDICATOR && idData != FOUR_BYTES_INDICATOR) {
             return null;
         }
 
@@ -123,14 +114,15 @@ public class XBeeDataReceiver implements MessageListener {
 
         // Número de valores numéricos que se van a recibir.
         int numData = data[1];
-
-
+        
+        System.out.print("NUmero de datos:" + numData+"\t");
 
 
         float[] convertedValues = new float[numData];
 
         // Tamaño de los datos
         int size = -1;
+        
         switch (idData) {
             case TWO_BYTES_INDICATOR:
                 size = 2;
@@ -141,8 +133,9 @@ public class XBeeDataReceiver implements MessageListener {
             case FOUR_BYTES_INDICATOR:
                 size = 4;
                 break;
-
         }
+        
+        System.out.print("particiones:" + size + "\n");
 
         int index = 2;
         // Recorrer el número de valores en el paquete.
@@ -167,7 +160,6 @@ public class XBeeDataReceiver implements MessageListener {
 
         // Imprime la dirección.
         System.out.println("Address: " + xb64.toString());
-
 
         float[] receivedValues = null;
 
